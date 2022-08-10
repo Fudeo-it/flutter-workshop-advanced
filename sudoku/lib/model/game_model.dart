@@ -17,15 +17,21 @@ class GameModel {
 
   void newGame() {
     var sudokuGenerator = SudokuGenerator(emptySquares: 26);
+    SudokuUtilities.printSudoku(sudokuGenerator.newSudoku);
 
-    game = sudokuGenerator.newSudoku
-        .map((quadrant) => quadrant
-            .map((cellValue) => CellModel(
-                  value: cellValue,
-                  editable: cellValue == 0,
-                ))
-            .toList())
-        .toList();
+    game = [0, 1, 2, 3, 4, 5, 6, 7, 8].map((quadrantIndex) {
+      return [0, 1, 2, 3, 4, 5, 6, 7, 8].map((cellIndex) {
+        final row = (cellIndex ~/ 3) + (quadrantIndex ~/ 3 * 3);
+        final column = (cellIndex % 3) + (quadrantIndex % 3 * 3);
+
+        int cellValue = sudokuGenerator.newSudoku[row][column];
+
+        return CellModel(
+          value: cellValue,
+          editable: cellValue == 0,
+        );
+      }).toList();
+    }).toList();
 
     gameSolved = sudokuGenerator.newSudokuSolved
         .map((quadrant) => quadrant
